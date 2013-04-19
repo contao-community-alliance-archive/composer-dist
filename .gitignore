@@ -1,0 +1,21 @@
+composer/cache/
+composer/vendor/
+composer/composer.lock
+composer/composer.phar
+system/modules/
+dist/contao-composer.zip
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs 
+.buildpath
+.project
+.settings/
+.build/
+.idea/
+nbproject/
+
+# Composer
+vendor/

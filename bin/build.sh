@@ -17,5 +17,5 @@ php composer.phar install || exit 1
 # change directory up
 cd ../ || exit 1
 
-# pack archive
-zip --symlinks -r dist/contao-composer.zip composer/composer.json composer/composer.lock composer/vendor system/modules || exit 1
+# pack archive (yes it is wanted to not save symlinks as symlinks, because ER2 cannot handle symlinks)
+zip -r dist/contao-composer.zip composer/composer.json composer/composer.lock composer/vendor system/modules || exit 1

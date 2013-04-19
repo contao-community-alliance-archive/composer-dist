@@ -18,4 +18,4 @@ php composer.phar install || exit 1
 cd ../ || exit 1
 
 # pack archive
-zip --symlinks -r dist/contao-composer.zip composer/composer.lock composer/vendor system/modules || exit 1
+zip --symlinks -r dist/contao-composer.zip composer/composer.json composer/composer.lock composer/vendor system/modules || exit 1

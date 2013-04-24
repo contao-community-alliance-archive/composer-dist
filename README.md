@@ -1,5 +1,23 @@
-Composer distribution
-=====================
+Contao composer distribution package builder
+============================================
 
-To build `dist/contao-composer.zip`, run `./bin/build.sh`.
-The `dist/contao-composer.zip` contains a preinstalled set of the composer directory and all dependencies to run on a server without phar support.
+This builder create a pre-packed archive of the contao composer integration.
+The archive can be used to install composer just by copying into the contao installation.
+
+The builder can create a `prod` archive, just for production usage.
+Or a `dev` archive, including vcs informations.
+
+Commands
+--------
+
+Build `prod` archive: `./console build` or `./console build --env prod`
+
+Build `dev` archive: `./console build --env dev`
+
+Cleanup: `./console clean` or `./console clean --env prod` or `./console clean --env dev`
+
+Custom env
+----------
+
+To create you custom environment copy `prod` or `dev` and modify it for your purpose.
+If your environment name contains `dev` e.g. `customdev`, then vcs informations are included.

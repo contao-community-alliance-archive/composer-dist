@@ -1,9 +1,15 @@
-composer/cache/
-composer/vendor/
-composer/composer.lock
-composer/composer.phar
-system/modules/
-dist/contao-composer.zip
+# Temporary files for build
+prod/composer/cache/
+prod/composer/vendor/
+prod/composer/composer.lock
+prod/composer/composer.phar
+prod/system/modules/
+dev/composer/cache/
+dev/composer/vendor/
+dev/composer/composer.lock
+dev/composer/composer.phar
+dev/system/modules/
+dist/
 
 # OS
 .DS_Store

@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+
+require_once('vendor/autoload.php');
+
+use Symfony\Component\Console\Application;
+use ContaoCommunityAlliance\ComposerDist\Command\BuildCommand;
+use ContaoCommunityAlliance\ComposerDist\Command\CleanCommand;
+
+$console = new Application();
+$console->add(new BuildCommand());
+$console->add(new CleanCommand());
+$console->run();

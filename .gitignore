@@ -4,11 +4,21 @@ prod/composer/vendor/
 prod/composer/composer.lock
 prod/composer/composer.phar
 prod/system/modules/
+prod-phar/composer/cache/
+prod-phar/composer/vendor/
+prod-phar/composer/composer.lock
+prod-phar/composer/composer.phar
+prod-phar/system/modules/
 dev/composer/cache/
 dev/composer/vendor/
 dev/composer/composer.lock
 dev/composer/composer.phar
 dev/system/modules/
+dev-phar/composer/cache/
+dev-phar/composer/vendor/
+dev-phar/composer/composer.lock
+dev-phar/composer/composer.phar
+dev-phar/system/modules/
 dist/
 
 # OS

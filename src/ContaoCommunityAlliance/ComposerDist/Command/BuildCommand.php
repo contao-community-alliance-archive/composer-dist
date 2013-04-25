@@ -42,12 +42,18 @@ class BuildCommand extends Command
 
 		$basepath = sprintf('%s/%s/', getcwd(), $env);
 
+		if (!file_exists($basepath . 'build.json')) {
+			throw new \RuntimeException(sprintf('The environment %s does not contain a build.json', $env));
+		}
+
+		$build = json_decode(file_get_contents($basepath . 'build.json'), true);
+
 		$this->cleanup($output, $env);
 		$this->installComposer($output, $basepath);
 		$this->installDependencies($output, $env, $basepath);
 
 		if ($zip) {
-			$this->buildZipArchive($output, $basepath, $out);
+			$this->buildZipArchive($output, $build, $basepath, $out);
 		}
 	}
 
@@ -103,7 +109,7 @@ class BuildCommand extends Command
 		}
 	}
 
-	protected function buildZipArchive(OutputInterface $output, $basepath, $outfile)
+	protected function buildZipArchive(OutputInterface $output, $build, $basepath, $outfile)
 	{
 		$output->writeln(sprintf('  - <info>Build ZIP archive %s</info>', $outfile));
 
@@ -113,16 +119,9 @@ class BuildCommand extends Command
 		$fileCount = 0;
 
 		foreach (
-			array(
-				$basepath . 'composer/vendor' => 'composer/vendor',
-				$basepath . 'composer/.htaccess' => 'composer/.htaccess',
-				$basepath . 'composer/composer.json' => 'composer/composer.json',
-				$basepath . 'composer/composer.lock' => 'composer/composer.lock',
-				$basepath . 'composer/composer.phar' => 'composer/composer.phar',
-				$basepath . 'system/modules' => 'system/modules',
-			) as $source => $target
+			$build['contents'] as $source => $target
 		) {
-			$fileCount += $this->addToZipArchive($zip, $source, $target);
+			$fileCount += $this->addToZipArchive($zip, $basepath . $source, $target);
 		}
 
 		$zip->close();

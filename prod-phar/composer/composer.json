@@ -5,7 +5,6 @@
     "version": "2.11.0",
     "type": "metapackage",
     "require": {
-		"composer/composer": "dev-master@dev",
         "contao-community-alliance/composer-installer": "dev-master@dev",
         "contao-community-alliance/composer": "dev-master@dev"
     },

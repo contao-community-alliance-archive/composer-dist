@@ -7,6 +7,14 @@ The archive can be used to install composer just by copying into the contao inst
 The builder can create a `prod` archive, just for production usage.
 Or a `dev` archive, including vcs informations.
 
+Nighly build
+------------
+
+* http://legacy-packages-via.contao-community-alliance.org/dist/contao-composer-prod.zip
+* http://legacy-packages-via.contao-community-alliance.org/dist/contao-composer-prod-phar.zip
+* http://legacy-packages-via.contao-community-alliance.org/dist/contao-composer-dev.zip
+* http://legacy-packages-via.contao-community-alliance.org/dist/contao-composer-dev-phar.zip
+
 Commands
 --------
 

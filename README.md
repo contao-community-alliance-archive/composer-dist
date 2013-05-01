@@ -10,10 +10,10 @@ Or a `dev` archive, including vcs informations.
 Nighly build
 ------------
 
-* http://legacy-packages-via.contao-community-alliance.org/dist/contao-composer-prod.zip
-* http://legacy-packages-via.contao-community-alliance.org/dist/contao-composer-prod-phar.zip
-* http://legacy-packages-via.contao-community-alliance.org/dist/contao-composer-dev.zip
-* http://legacy-packages-via.contao-community-alliance.org/dist/contao-composer-dev-phar.zip
+* for production use: http://legacy-packages-via.contao-community-alliance.org/dist/contao-composer-prod.zip
+* if your server support phar: http://legacy-packages-via.contao-community-alliance.org/dist/contao-composer-prod-phar.zip
+* for developers:  http://legacy-packages-via.contao-community-alliance.org/dist/contao-composer-dev.zip
+* if your server support phar: http://legacy-packages-via.contao-community-alliance.org/dist/contao-composer-dev-phar.zip
 
 Commands
 --------

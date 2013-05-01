@@ -7,7 +7,8 @@
     "require": {
 		"composer/composer": "dev-master@dev",
         "contao-community-alliance/composer-installer": "dev-master@dev",
-        "contao-community-alliance/composer": "dev-master@dev"
+        "contao-community-alliance/composer": "dev-master@dev",
+        "symfony/console": "2.3.*@dev"
     },
 	"minimum-stability": "dev",
     "scripts": {

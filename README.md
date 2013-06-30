@@ -10,10 +10,8 @@ Or a `dev` archive, including vcs informations.
 Nightly build
 -------------
 
-* for production use: http://legacy-packages-via.contao-community-alliance.org/dist/contao-composer-prod.zip
-* if your server support phar: http://legacy-packages-via.contao-community-alliance.org/dist/contao-composer-prod-phar.zip
-* for developers:  http://legacy-packages-via.contao-community-alliance.org/dist/contao-composer-dev.zip
-* if your server support phar: http://legacy-packages-via.contao-community-alliance.org/dist/contao-composer-dev-phar.zip
+* production use: http://legacy-packages-via.contao-community-alliance.org/dist/contao-composer-prod-phar.zip
+* for developers:  http://legacy-packages-via.contao-community-alliance.org/dist/contao-composer-dev-phar.zip
 
 Commands
 --------

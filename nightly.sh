@@ -7,7 +7,8 @@ cd "$DIR"
 git pull
 
 # update dependencies
-php composer.phar update
+php composer.phar self-update
+php composer.phar install
 
 # build archives
 ./console build --env prod

@@ -13,5 +13,5 @@ php composer.phar install
 # build archives
 ./console build --env prod
 ./console build --env dev
-cp target/*.zip ../web/dist/
+cp target/*.zip target/*.tar ../web/dist/
 

@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessBuilder;
 
 class BuildCommand extends Command
 {
@@ -22,6 +23,9 @@ class BuildCommand extends Command
 		$this->setDescription('Build the dist archive.');
 		$this->addOption('env', 'e', InputOption::VALUE_REQUIRED, 'Define the environment to build.', 'prod');
 		$this->addOption('zip', 'z', InputOption::VALUE_NONE, 'Build a ZIP archive (enabled by default, only present for sanity).');
+		$this->addOption('tar', 't', InputOption::VALUE_NONE, 'Build a TAR archive.');
+		$this->addOption('clean', null, InputOption::VALUE_NONE, 'Clean environment (enabled by default, only present for sanity).');
+		$this->addOption('no-clean', null, InputOption::VALUE_NONE, 'Dont clean environment.');
 		$this->addOption('output', 'o', InputOption::VALUE_REQUIRED, 'Define output path. (default: dist/contao-composer-$env.zip)');
 	}
 
@@ -29,32 +33,41 @@ class BuildCommand extends Command
 	{
 		// read and eval options
 		$env = $input->getOption('env');
-		$zip = $input->getOption('zip') || true;
+		$tar = $input->getOption('tar');
 		$out = $input->getOption('output');
+		$noClean = $input->getOption('no-clean');
 
-		if ($zip) {
+		if ($tar) {
+			$ext = 'tar';
+		}
+		else {
 			$ext = 'zip';
 		}
 
-		if (!$out) {
-			$out = sprintf('%s/dist/contao-composer-%s.%s', getcwd(), $env, $ext);
-		}
-
 		$basepath = sprintf('%s/%s/', getcwd(), $env);
+
+		$build = json_decode(file_get_contents($basepath . 'build.json'), true);
+
+		if (!$out) {
+			if (isset($build['filename'])) {
+				$out = sprintf('%s/target/%s', getcwd(), $build['filename']);
+			}
+			else {
+				$out = sprintf('%s/dist/contao-composer-%s.%s', getcwd(), $env, $ext);
+			}
+		}
 
 		if (!file_exists($basepath . 'build.json')) {
 			throw new \RuntimeException(sprintf('The environment %s does not contain a build.json', $env));
 		}
 
-		$build = json_decode(file_get_contents($basepath . 'build.json'), true);
-
-		$this->cleanup($output, $env);
+		if (!$noClean) {
+			$this->cleanup($output, $env);
+		}
 		$this->installComposer($output, $basepath);
 		$this->installDependencies($output, $env, $basepath);
 
-		if ($zip) {
-			$this->buildZipArchive($output, $build, $basepath, $out);
-		}
+		$this->buildArchive($output, $build, $basepath, $out);
 	}
 
 	protected function cleanup(OutputInterface $output, $env)
@@ -87,15 +100,17 @@ class BuildCommand extends Command
 	{
 		$output->writeln('  - <info>Install dependencies with composer</info>');
 
-		$cmd = 'php composer.phar install --no-interaction';
+		$cmd = 'php composer.phar install --verbose --no-interaction';
 		if ($output->isDecorated()) {
 			$cmd .= ' --ansi';
 		}
 		if (strpos($env, 'dev') !== false) {
 			$cmd .= ' --prefer-source';
+			$cmd .= ' --dev';
 		}
 		else {
 			$cmd .= ' --prefer-dist';
+			$cmd .= ' --no-dev';
 		}
 		$process = new Process($cmd, $basepath . 'composer');
 		$process->setTimeout(3600);
@@ -105,7 +120,23 @@ class BuildCommand extends Command
 			}
 		);
 		if (!$process->isSuccessful()) {
-			throw new RuntimeException($process->getErrorOutput());
+			throw new \RuntimeException($process->getErrorOutput());
+		}
+	}
+
+	protected function buildArchive(OutputInterface $output, $build, $basepath, $outfile)
+	{
+		$extension = strtolower(preg_replace('#.*\.(\w+)$#', '$1', $outfile));
+
+		switch ($extension) {
+			case 'zip':
+				$this->buildZipArchive($output, $build, $basepath, $outfile);
+				break;
+			case 'tar':
+				$this->buildTarArchive($output, $build, $basepath, $outfile);
+				break;
+			default:
+				throw new \RuntimeException('');
 		}
 	}
 
@@ -119,9 +150,9 @@ class BuildCommand extends Command
 		$fileCount = 0;
 
 		foreach (
-			$build['contents'] as $source => $target
+			$build['contents'] as $path
 		) {
-			$fileCount += $this->addToZipArchive($zip, $basepath . $source, $target);
+			$fileCount += $this->addToZipArchive($zip, $basepath . $path, $path);
 		}
 
 		$zip->close();
@@ -141,6 +172,61 @@ class BuildCommand extends Command
 		}
 		else {
 			$zip->addFile($source, $target);
+			$fileCount ++;
+		}
+		return $fileCount;
+	}
+
+	protected function buildTarArchive(OutputInterface $output, $build, $basepath, $outfile)
+	{
+		$output->writeln(sprintf('  - <info>Build TAR archive %s</info>', $outfile));
+
+		$files = array();
+		$fileCount = 0;
+
+		foreach (
+			$build['contents'] as $path
+		) {
+			$fileCount += $this->addToTarArchive($files, $basepath . $path, $path);
+		}
+
+		$processBuilder = new ProcessBuilder();
+		$processBuilder->setWorkingDirectory($basepath);
+		$processBuilder->add('tar');
+		$processBuilder->add('--create');
+		$processBuilder->add('--file');
+		$processBuilder->add($outfile);
+		foreach ($files as $file) {
+			$processBuilder->add($file);
+		}
+		$process = $processBuilder->getProcess();
+		$process->run();
+
+		if (!$process->isSuccessful()) {
+			$errorOutput = $process->getErrorOutput();
+			$errorOutputLines = explode("\n", $errorOutput);
+
+			$output->writeln(sprintf('  - <error>could not create tar archive %s</error>', $outfile));
+			foreach ($errorOutputLines as $errorOutputLine) {
+				$output->writeln(sprintf('    <error>%s</error>', $errorOutputLine));
+			}
+		}
+		else {
+			$output->writeln(sprintf('  - <info>%s files are stored in archive</info>', $fileCount));
+		}
+	}
+
+	protected function addToTarArchive(array &$files, $source, $target)
+	{
+		$fileCount = 0;
+		if (!is_link($source) && is_dir($source)) {
+			$iterator = new \FilesystemIterator($source, \FilesystemIterator::CURRENT_AS_PATHNAME);
+			foreach ($iterator as $item) {
+				$fileCount += $this->addToTarArchive($files, $item, $target . '/' . basename($item));
+			}
+		}
+		else {
+			$files[] = $target;
 			$fileCount ++;
 		}
 		return $fileCount;

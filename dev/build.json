@@ -1,9 +1,11 @@
 {
-	"contents": {
-		"composer/vendor": "composer/vendor",
-		"composer/.htaccess": "composer/.htaccess",
-		"composer/composer.json": "composer/composer.json",
-		"composer/composer.lock": "composer/composer.lock",
-		"system/modules": "system/modules"
-	}
+	"filename": "contao-composer-dev.tar",
+	"contents": [
+		"composer/vendor",
+		"composer/.htaccess",
+		"composer/composer.phar",
+		"composer/composer.json",
+		"composer/composer.lock",
+		"system/modules"
+	]
 }

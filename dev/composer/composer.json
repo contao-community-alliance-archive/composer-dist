@@ -10,9 +10,9 @@
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"scripts": {
-		"pre-update-cmd": "ContaoCommunityAlliance\\\\ComposerInstaller\\\\ModuleInstaller::preUpdate",
-		"post-update-cmd": "ContaoCommunityAlliance\\\\ComposerInstaller\\\\ModuleInstaller::postUpdate",
-		"post-autoload-dump": "ContaoCommunityAlliance\\\\ComposerInstaller\\\\ModuleInstaller::postAutoloadDump"
+		"pre-update-cmd": "ContaoCommunityAlliance\\ComposerInstaller\\ModuleInstaller::preUpdate",
+		"post-update-cmd": "ContaoCommunityAlliance\\ComposerInstaller\\ModuleInstaller::postUpdate",
+		"post-autoload-dump": "ContaoCommunityAlliance\\ComposerInstaller\\ModuleInstaller::postAutoloadDump"
 	},
 	"config": {
 		"preferred-install": "source",
